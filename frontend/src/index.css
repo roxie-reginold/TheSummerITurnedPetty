@@ -303,12 +303,14 @@ textarea {
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
+  margin: 20px 0;
+  justify-content: center;
 }
 
-.share-button, .download-button {
+.action-buttons button {
   flex: 1;
   min-width: 120px;
-  padding: 10px 15px;
+  padding: 12px 20px;
   border: 4px outset var(--neon-green);
   background: var(--electric-blue);
   color: #000;
@@ -316,17 +318,40 @@ textarea {
   cursor: pointer;
   border-radius: 6px;
   transition: all 0.2s ease;
+  font-size: 16px;
 }
 
-.download-button {
+.action-buttons .share-button {
+  border-color: var(--hot-pink);
+  background: var(--neon-green);
+  color: #000;
+}
+
+.action-buttons .download-button {
   border-color: var(--neon-orange);
   background: var(--deep-purple);
   color: #fff;
 }
 
-.share-button:hover, .download-button:hover {
-  transform: translateY(-1px);
+.action-buttons #copyButton {
+  border-color: var(--electric-blue);
+  background: var(--hot-pink);
+  color: #fff;
+}
+
+.action-buttons button:hover:not(:disabled) {
+  transform: translateY(-2px);
   filter: brightness(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.action-buttons button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.action-buttons button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 /* Mobile responsive */
@@ -340,8 +365,9 @@ textarea {
     flex-direction: column;
   }
   
-  .share-button, .download-button {
+  .action-buttons button {
     width: 100%;
+    min-width: unset;
   }
 }
 

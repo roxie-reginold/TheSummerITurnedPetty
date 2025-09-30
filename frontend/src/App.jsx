@@ -304,37 +304,45 @@ export default function App() {
     })
   }
 
+  // Share using native share dialog (mobile & desktop)
+  async function handleShare() {
+    try {
+      const pngBlob = await generateWreckagePngBlob(meme, outputText)
+      const file = new File([pngBlob], 'text-wrecker.png', { type: 'image/png' })
+      
+      if (navigator.share) {
+        const shareData = { 
+          files: [file], 
+          title: 'Text Wrecker', 
+          text: outputText 
+        }
+        
+        // Check if can share files
+        if (navigator.canShare && navigator.canShare(shareData)) {
+          await navigator.share(shareData)
+        } else {
+          // Share without files if files not supported
+          await navigator.share({ title: 'Text Wrecker', text: outputText })
+        }
+        
+        setCopying(true)
+        setTimeout(() => setCopying(false), 2000)
+        fetchAdvice()
+      } else {
+        alert('Share is not supported on this browser. Try Copy or Download instead.')
+      }
+    } catch (err) {
+      if (err.name !== 'AbortError') {
+        console.error('Share failed:', err)
+      }
+    }
+  }
+
+  // Copy image to clipboard (desktop & some mobile browsers)
   async function handleCopy() {
     try {
       const pngBlob = await generateWreckagePngBlob(meme, outputText)
       
-      // Try Web Share API first (best for mobile)
-      if (navigator.share && navigator.canShare) {
-        const file = new File([pngBlob], 'text-wrecker.png', { type: 'image/png' })
-        const shareData = {
-          files: [file],
-          title: 'Text Wrecker',
-          text: outputText
-        }
-        
-        if (navigator.canShare(shareData)) {
-          try {
-            await navigator.share(shareData)
-            setCopying(true)
-            setTimeout(() => setCopying(false), 2000)
-            // Fetch advice after successful share
-            fetchAdvice()
-            return
-          } catch (err) {
-            // User cancelled or share failed, fall through to next method
-            if (err.name === 'AbortError') {
-              return // User cancelled, don't try other methods
-            }
-          }
-        }
-      }
-      
-      // Try clipboard API (works on desktop and some mobile browsers)
       if (navigator?.clipboard?.write && typeof window.ClipboardItem !== 'undefined') {
         try {
           const item = new ClipboardItem({ 'image/png': pngBlob })
@@ -342,14 +350,38 @@ export default function App() {
           setCopying(true)
           setTimeout(() => setCopying(false), 2000)
           fetchAdvice()
-          return
         } catch (err) {
-          // Clipboard failed, fall through to download
-          console.log('Clipboard write failed:', err)
+          console.error('Image copy failed:', err)
+          // Fallback to text copy
+          if (navigator.clipboard && outputText) {
+            await navigator.clipboard.writeText(outputText)
+            setCopying(true)
+            setTimeout(() => setCopying(false), 2000)
+            alert('Image copy not supported. Text copied instead!')
+            fetchAdvice()
+          }
+        }
+      } else {
+        // Fallback to text copy
+        if (navigator.clipboard && outputText) {
+          await navigator.clipboard.writeText(outputText)
+          setCopying(true)
+          setTimeout(() => setCopying(false), 2000)
+          alert('Image copy not supported. Text copied instead!')
+          fetchAdvice()
+        } else {
+          alert('Clipboard is not supported on this browser. Try Download instead.')
         }
       }
-      
-      // Fallback: download the PNG
+    } catch (err) {
+      console.error('Copy failed:', err)
+    }
+  }
+
+  // Download image as file (works everywhere)
+  async function handleDownload() {
+    try {
+      const pngBlob = await generateWreckagePngBlob(meme, outputText)
       const url = URL.createObjectURL(pngBlob)
       const a = document.createElement('a')
       a.href = url
@@ -361,22 +393,9 @@ export default function App() {
       setCopying(true)
       setTimeout(() => setCopying(false), 2000)
       fetchAdvice()
-      
     } catch (err) {
-      console.error('Copy/share failed:', err)
-      // Last resort: copy text only
-      try {
-        if (navigator.clipboard && outputText) {
-          await navigator.clipboard.writeText(outputText)
-          setCopying(true)
-          setTimeout(() => setCopying(false), 2000)
-          fetchAdvice()
-        }
-      } catch {
-        // Even text copy failed, just show button feedback
-        setCopying(true)
-        setTimeout(() => setCopying(false), 2000)
-      }
+      console.error('Download failed:', err)
+      alert('Download failed. Please try again.')
     }
   }
 
@@ -439,9 +458,19 @@ export default function App() {
         <div id="adviceBanner" role="status" aria-live="polite">{advice}</div>
       ) : null}
 
-      <button id="copyButton" className="secondary" onClick={handleCopy}>
-        {copying ? 'Copied!' : (navigator.share ? 'Share Wreckage' : 'Copy Wreckage')}
-      </button>
+      <div className="action-buttons">
+        {navigator.share && (
+          <button className="secondary share-button" onClick={handleShare} disabled={!outputText}>
+            📤 Share
+          </button>
+        )}
+        <button id="copyButton" className="secondary" onClick={handleCopy} disabled={!outputText}>
+          {copying ? '✓ Copied!' : '📋 Copy'}
+        </button>
+        <button className="secondary download-button" onClick={handleDownload} disabled={!outputText}>
+          💾 Download
+        </button>
+      </div>
 
       <img
         id="memeImage"
