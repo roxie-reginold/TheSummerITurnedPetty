@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 import os
 import random
 import urllib.parse
@@ -13,6 +14,15 @@ except Exception:  # pragma: no cover - library optional at runtime
 
 def create_app() -> Flask:
     app = Flask(__name__)
+    
+    # Enable CORS for all routes to allow GitHub Pages frontend
+    CORS(app, resources={
+        r"/*": {
+            "origins": "*",
+            "methods": ["GET", "POST", "OPTIONS"],
+            "allow_headers": ["Content-Type"]
+        }
+    })
     # Load environment variables from backend/.env or project root .env if present
     try:
         from dotenv import load_dotenv  # type: ignore
