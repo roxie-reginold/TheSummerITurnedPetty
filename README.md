@@ -1,126 +1,273 @@
-# Text Wrecker: The Summer I Turned Petty
+# 💥 The Summer I Turned Petty - Text Wrecker
 
-Single-page app that "wrecks" user text with funny persona-based replacements. Built for hackathon meme-ability.
+A single-page app that "wrecks" user text with hilarious persona-based transformations using AI. Built for hackathon meme-ability and maximum chaos. 🔥
+
+**Live Demo:** [https://roxie-reginold.github.io/TheSummerITurnedPetty/](https://roxie-reginold.github.io/TheSummerITurnedPetty/)
+
+---
 
 ## ✨ Features
 
-- Persona-based transformations:
-  - Corporate Robot
-  - Passive-Aggressive Nightmare
-  - Shakespearean Drama King
-- One-click chaos: confirm, wreck, meme, sound, copy
-- Safe text rendering (no `innerHTML`)
-- Accessible controls and visible labels
-- Early-2000s cursed aesthetic: Comic Neue, hot pink, flashing header, tiled bg
+### 🎭 7 Chaotic Personas
+Transform your text with AI-powered personalities:
+- **Corporate Robot** - Buzzword-laden business speak
+- **Passive-Aggressive Nightmare** - Politely hostile communication
+- **Shakespearean Drama King** - Elizabethan theatrical flair
+- **Teen Angst Poet** - Melodramatic existential dread
+- **Belly** - Emotionally manipulative star-crossed drama
+- **Jeremiah** - Overly enthusiastic hype energy
+- **Conrad** - Pretentious literary sophistication
 
-## 🧭 How it works
+### 🎨 Early 2000s Cursed Aesthetic
+- Comic Neue font everywhere
+- Hot pink containers with neon accents
+- Flashing header animation
+- Random meme reactions
+- Error sound effects on click
 
-1. Type in the input.
-2. Pick a personality from the selection.
-3. Click "Wreck" and confirm the chaos prompt.
-4. Your transformed text appears; a random meme image swaps in.
-5. Click "Copy" to put the output on your clipboard.
+### 🤖 AI-Powered Features
+- **Text Transformation** - Gemini AI rewrites your text in chosen persona
+- **Meme Generation** - Auto-generated memes with custom captions
+- **Chaotic Advice** - Post-copy encouragement to "send it anyway"
 
-Core UI elements (IDs/classes used in the DOM):
-- `.flashing-text`
-- `#personalitySelect`
-- `#userInput`
-- `#wreckButton`
-- `#output`
-- `#copyButton`
-- `#memeImage`
-- `#errorSound`
+### 🎯 User Experience
+1. Type your message
+2. Select a persona
+3. Click "Wreck It!" (with chaos confirmation)
+4. Get transformed text + reaction meme
+5. Copy as image to clipboard
+6. Receive terrible life advice
 
-## 🗂 Project layout
+---
+
+## 🏗️ Architecture
 
 ```
-TorontoStupidHackathon/
-  backend/
-    app.py
-    personas/
-      corporate_robot.txt
-      passive_aggressive_nightmare.txt
-      shakespearean_drama_king.txt
-      ...
-    requirements.txt
-  frontend/
-    index.html
-    vite.config.js
-    package.json
-    src/
-      main.jsx
-      App.jsx
-      index.css
-      assets/
+Frontend (GitHub Pages)
+    ↓ HTTPS API calls
+Backend (Vercel)
+    ↓ AI requests
+Google Gemini API
 ```
 
-## 🛠 Tech stack
+### Tech Stack
+- **Frontend:** React + Vite + CSS animations
+- **Backend:** Flask (Python) + Google Gemini AI
+- **Deployment:** GitHub Pages (frontend) + Vercel (backend)
+- **Styling:** Google Fonts (Comic Neue) + Custom CSS
 
-- Frontend: React + Vite
-- Fonts: Google Fonts "Comic Neue"
-- Assets: external meme images and audio URLs (no local hosting required)
+---
 
-## 🚀 Quick start
+## 🚀 Quick Start
 
-Prereqs:
-- Node.js 18+ and npm
+### Local Development
 
-Frontend (dev):
+**Frontend:**
 ```bash
 cd frontend
 npm install
 npm run dev
-```
-- Open the URL printed by Vite (usually `http://localhost:5173`).
-
-Frontend (production build + preview):
-```bash
-cd frontend
-npm run build
-npm run preview
+# Opens at http://localhost:5173
 ```
 
-Optional backend (demo API):
-Prereqs: Python 3.10+ (or any recent 3.x)
+**Backend (optional for local testing):**
 ```bash
 cd backend
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
+
+# Set your Gemini API key
+export GOOGLE_API_KEY="your-api-key-here"
+
 python app.py
+# Runs at http://localhost:5000
 ```
 
-## 🧩 Behavior details
+Get your Gemini API key: [Google AI Studio](https://aistudio.google.com/app/apikey)
 
-- On `#wreckButton`:
-  - Plays `#errorSound`
-  - Asks: "Are you SURE you want to introduce this level of chaos into your life?"
-  - If confirmed: transforms text per selected personality, updates `#output`, swaps `#memeImage` URL
-- On `#copyButton`:
-  - Copies `#output` text via `navigator.clipboard.writeText` (fallback no-op if unavailable)
-  - Temporarily shows "Copied!" ~2s, then reverts
+---
 
-## 🧠 Transformations
+## 📦 Deployment
 
-Three transformation functions implement robust, case-insensitive phrase replacements that avoid breaking punctuation:
-- Corporate Robot
-- Passive-Aggressive Nightmare
-- Shakespearean Drama King
+We provide comprehensive deployment guides:
 
-These reside in the frontend app code and run purely on the client side.
+### 🎯 Quick Deploy (5 minutes)
+See **[QUICK_DEPLOY_GUIDE.md](./QUICK_DEPLOY_GUIDE.md)** for rapid deployment
 
-## 🔒 Security and ♿ Accessibility
+### 📖 Full Deployment Guide
+See **[DEPLOYMENT_GUIDE.md](./DEPLOYMENT_GUIDE.md)** for detailed instructions
 
-- Never uses `innerHTML` to render user input
-- Focusable buttons and labelled controls
-- High-contrast, readable text with large hit targets
+### ✅ Deployment Checklist
+See **[DEPLOYMENT_CHECKLIST.md](./DEPLOYMENT_CHECKLIST.md)** for step-by-step checklist
 
-## 🧪 Development notes
+### 🏗️ Architecture Details
+See **[ARCHITECTURE.md](./ARCHITECTURE.md)** for system architecture
 
-- Keep code readable; avoid minification or dense one-liners
-- Keep images/audio as external URLs
-- Use the specified IDs/classes consistently to avoid breaking UI hooks
+**Summary:**
+1. **Backend:** Deploy to Vercel with Gemini API key
+2. **Frontend:** Deploy to GitHub Pages with backend URL
+3. **Total time:** ~5 minutes
+4. **Cost:** $0 (free tiers)
+
+---
+
+## 🗂️ Project Structure
+
+```
+TheSummerITurnedPetty/
+├── frontend/                 # React frontend
+│   ├── src/
+│   │   ├── App.jsx          # Main app component
+│   │   ├── OnlyPans.jsx     # Easter egg feature
+│   │   ├── SocialShare.jsx  # Share functionality
+│   │   ├── index.css        # Global styles
+│   │   └── assets/          # Images
+│   ├── index.html
+│   ├── vite.config.js
+│   └── package.json
+│
+├── backend/                  # Flask API
+│   ├── app.py               # Main Flask application
+│   ├── personas/            # AI persona prompts
+│   │   ├── corporate_robot.txt
+│   │   ├── passive_aggressive_nightmare.txt
+│   │   ├── shakespearean_drama_king.txt
+│   │   ├── teen_angst_poet.txt
+│   │   ├── belly.txt
+│   │   ├── jeremiah.txt
+│   │   └── conrad.txt
+│   └── requirements.txt
+│
+├── api/
+│   └── index.py             # Vercel serverless entry
+│
+├── .github/
+│   └── workflows/
+│       └── deploy-frontend.yml  # GitHub Actions
+│
+└── vercel.json              # Vercel configuration
+```
+
+---
+
+## 🔌 API Endpoints
+
+### `POST /api/wreck`
+Transform text with AI persona
+```json
+Request: { "persona": "Corporate Robot", "text": "Let's talk" }
+Response: { "output": "Let's circle back to touch base on synergy alignment" }
+```
+
+### `POST /api/meme`
+Generate meme with custom captions
+```json
+Request: { "text": "I sent the text" }
+Response: { "url": "https://api.memegen.link/images/custom/..." }
+```
+
+### `POST /api/advice`
+Get chaotic post-copy advice
+```json
+Request: { "text": "Should I send this?" }
+Response: { "advice": "100% send it. What's the worst that could happen?" }
+```
+
+### `GET /health`
+Health check endpoint
+```json
+Response: { "status": "ok" }
+```
+
+---
+
+## 🎮 UI Elements
+
+Core DOM elements (for testing/automation):
+- `.flashing-text` - Animated header
+- `#personalitySelect` - Persona dropdown
+- `#userInput` - Text input area
+- `#wreckButton` - Transform button
+- `#output` - Result display
+- `#copyButton` - Copy to clipboard
+- `#memeImage` - Generated meme
+- `#errorSound` - Sound effect audio
+
+---
+
+## 🔒 Security & Accessibility
+
+### Security
+- ✅ No `innerHTML` - All user text rendered safely
+- ✅ CORS enabled for GitHub Pages
+- ✅ API keys stored securely in environment variables
+- ✅ HTTPS everywhere
+
+### Accessibility
+- ✅ Keyboard navigation support
+- ✅ Labeled form controls
+- ✅ High contrast text
+- ✅ Screen reader friendly
+- ✅ Focus indicators
+
+---
+
+## 🎨 Customization
+
+### Add New Personas
+1. Create `backend/personas/new_persona.txt` with prompt
+2. Add to `filename_by_persona` dict in `backend/app.py`
+3. Add to persona list in `frontend/src/App.jsx`
+4. Redeploy
+
+### Modify Styling
+Edit `frontend/src/index.css` for:
+- Colors (CSS variables)
+- Animations
+- Layout
+- Fonts
+
+---
+
+## 🐛 Troubleshooting
+
+### "AI not configured" error
+- Add `GOOGLE_API_KEY` in Vercel environment variables
+- Redeploy backend
+
+### Frontend can't reach backend
+- Verify `VITE_API_URL` secret in GitHub Actions
+- Check CORS settings in `backend/app.py`
+- Disable Vercel Deployment Protection
+
+### GitHub Pages 404
+- Ensure Pages source is "GitHub Actions"
+- Wait 2-3 minutes after deployment
+- Check workflow run in Actions tab
+
+---
 
 ## 📄 License
 
-MIT (or your preferred license)
+MIT License - Feel free to fork and modify!
+
+---
+
+## 🤝 Contributing
+
+Built for [Toronto Stupid Hackathon](https://github.com/sophian098/TorontoStupidHackathon). Contributions welcome!
+
+---
+
+## 🎉 Credits
+
+- **AI:** Google Gemini 2.5 Flash
+- **Memes:** memegen.link API
+- **Font:** Comic Neue (Google Fonts)
+- **Deployment:** Vercel + GitHub Pages
+- **Inspiration:** The absolute chaos of modern texting
+
+---
+
+**Made with 💥 and questionable life choices**
