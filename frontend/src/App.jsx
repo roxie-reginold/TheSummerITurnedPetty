@@ -123,6 +123,9 @@ const MEMES = [
 
 const FALLBACK_MEME = 'https://picsum.photos/seed/wrecker-fallback/640/420'
 
+// Use production API URL when not in development
+const API_BASE = import.meta.env.VITE_API_URL || '/api'
+
 export default function App() {
   const [persona, setPersona] = useState('Corporate Robot')
   const [input, setInput] = useState('')
@@ -158,7 +161,7 @@ export default function App() {
     try {
       // Try backend AI first; fall back to local rules if unavailable
       try {
-        const res = await fetch('/api/wreck', {
+        const res = await fetch(`${API_BASE}/wreck`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ persona, text: input })
@@ -180,7 +183,7 @@ export default function App() {
       // Attempt meme API, fallback to local list
       let memeUrl = ''
       try {
-        const res = await fetch('/api/meme', {
+        const res = await fetch(`${API_BASE}/meme`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text: input })
@@ -328,7 +331,7 @@ export default function App() {
 
     // Fetch chaotic advice to display after copy
     try {
-      const res = await fetch('/api/advice', {
+      const res = await fetch(`${API_BASE}/advice`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: outputText })
