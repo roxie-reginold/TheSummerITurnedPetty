@@ -124,6 +124,8 @@ const MEMES = [
 const FALLBACK_MEME = 'https://picsum.photos/seed/wrecker-fallback/640/420'
 
 // Use production API URL when not in development
+// In production (GitHub Pages), VITE_API_URL should point to the Vercel backend
+// In development, it falls back to '/api' which is proxied to localhost:5000
 const API_BASE = import.meta.env.VITE_API_URL || '/api'
 
 export default function App() {
