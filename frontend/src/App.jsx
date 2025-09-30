@@ -307,31 +307,81 @@ export default function App() {
   async function handleCopy() {
     try {
       const pngBlob = await generateWreckagePngBlob(meme, outputText)
+      
+      // Try Web Share API first (best for mobile)
+      if (navigator.share && navigator.canShare) {
+        const file = new File([pngBlob], 'text-wrecker.png', { type: 'image/png' })
+        const shareData = {
+          files: [file],
+          title: 'Text Wrecker',
+          text: outputText
+        }
+        
+        if (navigator.canShare(shareData)) {
+          try {
+            await navigator.share(shareData)
+            setCopying(true)
+            setTimeout(() => setCopying(false), 2000)
+            // Fetch advice after successful share
+            fetchAdvice()
+            return
+          } catch (err) {
+            // User cancelled or share failed, fall through to next method
+            if (err.name === 'AbortError') {
+              return // User cancelled, don't try other methods
+            }
+          }
+        }
+      }
+      
+      // Try clipboard API (works on desktop and some mobile browsers)
       if (navigator?.clipboard?.write && typeof window.ClipboardItem !== 'undefined') {
-        const item = new ClipboardItem({ 'image/png': pngBlob })
-        await navigator.clipboard.write([item])
-        setCopying(true)
-        setTimeout(() => setCopying(false), 2000)
-      } else {
-        // Fallback: download the PNG if clipboard image write unsupported
-        const url = URL.createObjectURL(pngBlob)
-        const a = document.createElement('a')
-        a.href = url
-        a.download = 'text-wrecker.png'
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        URL.revokeObjectURL(url)
+        try {
+          const item = new ClipboardItem({ 'image/png': pngBlob })
+          await navigator.clipboard.write([item])
+          setCopying(true)
+          setTimeout(() => setCopying(false), 2000)
+          fetchAdvice()
+          return
+        } catch (err) {
+          // Clipboard failed, fall through to download
+          console.log('Clipboard write failed:', err)
+        }
+      }
+      
+      // Fallback: download the PNG
+      const url = URL.createObjectURL(pngBlob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'text-wrecker.png'
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      setCopying(true)
+      setTimeout(() => setCopying(false), 2000)
+      fetchAdvice()
+      
+    } catch (err) {
+      console.error('Copy/share failed:', err)
+      // Last resort: copy text only
+      try {
+        if (navigator.clipboard && outputText) {
+          await navigator.clipboard.writeText(outputText)
+          setCopying(true)
+          setTimeout(() => setCopying(false), 2000)
+          fetchAdvice()
+        }
+      } catch {
+        // Even text copy failed, just show button feedback
         setCopying(true)
         setTimeout(() => setCopying(false), 2000)
       }
-    } catch {
-      // If generation/copy fails, do nothing visible beyond the button feedback
-      setCopying(true)
-      setTimeout(() => setCopying(false), 2000)
     }
+  }
 
-    // Fetch chaotic advice to display after copy
+  // Helper function to fetch chaotic advice
+  async function fetchAdvice() {
     try {
       const res = await fetch(`${API_BASE}/advice`, {
         method: 'POST',
@@ -390,7 +440,7 @@ export default function App() {
       ) : null}
 
       <button id="copyButton" className="secondary" onClick={handleCopy}>
-        {copying ? 'Copied!' : 'Copy Wreckage'}
+        {copying ? 'Copied!' : (navigator.share ? 'Share Wreckage' : 'Copy Wreckage')}
       </button>
 
       <img
